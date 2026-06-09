@@ -1,0 +1,263 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type UserSettings = 
+ record {
+   colorblind: bool;
+   currency: text;
+   language: text;
+   reportPrefs: ReportPrefs;
+   theme: text;
+ };
+type UserProfile = 
+ record {
+   createdAt: Timestamp;
+   displayName: text;
+   id: UserId;
+   profilePictureUrl: opt text;
+   settings: opt UserSettings;
+   username: text;
+ };
+type UserId = principal;
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type TransactionType = 
+ variant {
+   buy;
+   sell;
+ };
+type TransactionInput = 
+ record {
+   amount: float64;
+   coinId: text;
+   coinName: text;
+   coinSymbol: text;
+   id: text;
+   notes: opt text;
+   pricePerCoin: float64;
+   timestamp: Timestamp;
+   transactionType: TransactionType;
+ };
+type Transaction = 
+ record {
+   amount: float64;
+   coinId: text;
+   coinName: text;
+   coinSymbol: text;
+   id: text;
+   notes: opt text;
+   pricePerCoin: float64;
+   timestamp: Timestamp;
+   transactionType: TransactionType;
+ };
+type TradeOrder = 
+ record {
+   coinId: text;
+   coinQuantity: float64;
+   coinSymbol: text;
+   fiatAmount: float64;
+   id: text;
+   orderType: OrderType;
+   priceAtExecution: float64;
+   status: OrderStatus;
+   stripePaymentIntentId: opt text;
+   timestamp: int;
+ };
+type Timestamp = int;
+type SparklineData = vec float64;
+type SettingsInput = 
+ record {
+   colorblind: bool;
+   currency: text;
+   language: text;
+   theme: text;
+ };
+type ReportPrefsInput = 
+ record {
+   defaultChartDays: nat;
+   roundingDecimals: nat;
+ };
+type ReportPrefs = 
+ record {
+   defaultChartDays: nat;
+   roundingDecimals: nat;
+ };
+type ProfileInput = 
+ record {
+   displayName: text;
+   profilePictureUrl: opt text;
+   username: text;
+ };
+type PriceAlert = 
+ record {
+   coinId: text;
+   coinName: text;
+   createdAt: int;
+   direction: variant {
+                above;
+                below;
+              };
+   id: text;
+   targetPrice: float64;
+   triggered: bool;
+ };
+type OrderType = 
+ variant {
+   buy;
+   sell;
+ };
+type OrderStatus = 
+ variant {
+   completed;
+   failed;
+   pending;
+ };
+type NewsItem = 
+ record {
+   publishedAt: int;
+   source: text;
+   title: text;
+   url: text;
+ };
+type MarketResponse = 
+ record {
+   coins: vec Coin;
+   page: nat;
+   perPage: nat;
+   updatedAt: int;
+ };
+type LinePoint = 
+ record {
+   price: float64;
+   timestamp: int;
+ };
+type GlobalStats = 
+ record {
+   activeCryptocurrencies: nat;
+   btcDominance: float64;
+   ethDominance: float64;
+   marketCapChangePercentage24h: float64;
+   markets: nat;
+   totalMarketCap: float64;
+   totalVolume24h: float64;
+ };
+type GlobalResponse = 
+ record {
+   stats: GlobalStats;
+   updatedAt: int;
+ };
+type Coin = 
+ record {
+   ath: float64;
+   athChangePercentage: float64;
+   circulatingSupply: float64;
+   currentPrice: float64;
+   high24h: float64;
+   id: text;
+   image: text;
+   low24h: float64;
+   marketCap: float64;
+   marketCapRank: nat;
+   name: text;
+   priceChangePercentage1h: float64;
+   priceChangePercentage24h: float64;
+   priceChangePercentage7d: float64;
+   sparkline7d: SparklineData;
+   symbol: text;
+   totalSupply: float64;
+   totalVolume: float64;
+ };
+type ChartKind = 
+ variant {
+   candle;
+   line;
+ };
+type ChartData = 
+ record {
+   candles: vec Candle;
+   coinId: text;
+   days: nat;
+   kind: ChartKind;
+   line: vec LinePoint;
+   updatedAt: int;
+ };
+type Candle = 
+ record {
+   close: float64;
+   high: float64;
+   low: float64;
+   open: float64;
+   timestamp: int;
+ };
+type ApiResult_3 = 
+ variant {
+   err: text;
+   ok: ChartData;
+ };
+type ApiResult_2 = 
+ variant {
+   err: text;
+   ok: vec NewsItem;
+ };
+type ApiResult_1 = 
+ variant {
+   err: text;
+   ok: GlobalResponse;
+ };
+type ApiResult = 
+ variant {
+   err: text;
+   ok: MarketResponse;
+ };
+service : {
+  addTradeOrder: (order: TradeOrder) -> ();
+  cancelTradeOrder: (orderId: text) -> ();
+  completeTradeOrder: (orderId: text) -> ();
+  deletePriceAlert: (alertId: text) -> (variant {
+                                          err: text;
+                                          ok;
+                                        });
+  getCoinChart: (coinId: text, days: nat, kind: ChartKind) -> (ApiResult_3);
+  getCoinNews: (coinId: text) -> (ApiResult_2);
+  getGlobalStats: () -> (ApiResult_1);
+  getMarketData: () -> (ApiResult);
+  getMarketDataPage: (page: nat, perPage: nat) -> (ApiResult);
+  getPortfolioTransactions: () -> (vec Transaction) query;
+  getPriceAlerts: () -> (vec PriceAlert) query;
+  getTradeOrders: () -> (vec TradeOrder) query;
+  getUserProfile: () -> (opt UserProfile);
+  getUserSettings: () -> (opt UserSettings) query;
+  getWatchlist: () -> (vec text) query;
+  setPortfolioTransactions: (txs: vec TransactionInput) -> ();
+  setPriceAlert: (alert: PriceAlert) -> (variant {
+                                           err: text;
+                                           ok;
+                                         });
+  setWatchlist: (coinIds: vec text) -> ();
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  updatePriceAlert: (alertId: text, triggered: bool) ->
+   (variant {
+      err: text;
+      ok;
+    });
+  updateReportPrefs: (input: ReportPrefsInput) -> (UserSettings);
+  updateUserProfile: (input: ProfileInput) -> (UserProfile);
+  updateUserSettings: (input: SettingsInput) -> (UserSettings);
+}

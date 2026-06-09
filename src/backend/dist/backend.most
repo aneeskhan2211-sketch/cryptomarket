@@ -1,0 +1,157 @@
+// Version: 3.0.0
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OldOrderStatus__13175761 = {#completed; #failed; #pending};
+type OldOrderType__400658334 = {#buy; #sell};
+type OldReportPrefs__45166308 =
+  {defaultChartDays : Nat; roundingDecimals : Nat};
+type OldTimestamp__27916213 = Int;
+type OldTradeOrder__725501067 =
+  {
+    coinId : Text;
+    coinQuantity : Float;
+    coinSymbol : Text;
+    fiatAmount : Float;
+    id : Text;
+    orderType : OldOrderType__400658334;
+    priceAtExecution : Float;
+    status : OldOrderStatus__13175761;
+    stripePaymentIntentId : ?Text;
+    timestamp : Int
+  };
+type OldTransactionType__927121552 = {#buy; #sell};
+type OldTransaction__963748675 =
+  {
+    amount : Float;
+    coinId : Text;
+    coinName : Text;
+    coinSymbol : Text;
+    id : Text;
+    notes : ?Text;
+    pricePerCoin : Float;
+    timestamp : OldTimestamp__27916213;
+    transactionType : OldTransactionType__927121552
+  };
+type OldUserId__580276348 = Principal;
+type OldUserProfile__416069324 =
+  {
+    createdAt : OldTimestamp__27916213;
+    displayName : Text;
+    id : OldUserId__580276348;
+    profilePictureUrl : ?Text;
+    settings : ?OldUserSettings__802282147;
+    username : Text
+  };
+type OldUserSettings__802282147 =
+  {
+    colorblind : Bool;
+    currency : Text;
+    language : Text;
+    reportPrefs : OldReportPrefs__45166308;
+    theme : Text
+  };
+type OrderStatus__674888374 = {#completed; #failed; #pending};
+type OrderType__483446352 = {#buy; #sell};
+type PriceAlert__232210542 =
+  {
+    coinId : Text;
+    coinName : Text;
+    createdAt : Int;
+    direction : {#above; #below};
+    id : Text;
+    targetPrice : Float;
+    triggered : Bool
+  };
+type ReportPrefs__1012324467 =
+  {defaultChartDays : Nat; roundingDecimals : Nat};
+type Timestamp__301639476 = Int;
+type TradeOrder__776957706 =
+  {
+    coinId : Text;
+    coinQuantity : Float;
+    coinSymbol : Text;
+    fiatAmount : Float;
+    id : Text;
+    orderType : OrderType__483446352;
+    priceAtExecution : Float;
+    status : OrderStatus__674888374;
+    stripePaymentIntentId : ?Text;
+    timestamp : Int
+  };
+type TransactionType__242763729 = {#buy; #sell};
+type Transaction__386155942 =
+  {
+    amount : Float;
+    coinId : Text;
+    coinName : Text;
+    coinSymbol : Text;
+    id : Text;
+    notes : ?Text;
+    pricePerCoin : Float;
+    timestamp : Timestamp__301639476;
+    transactionType : TransactionType__242763729
+  };
+type UserId__1043627770 = Principal;
+type UserProfile__277265826 =
+  {
+    createdAt : Timestamp__301639476;
+    displayName : Text;
+    id : UserId__1043627770;
+    profilePictureUrl : ?Text;
+    settings : ?UserSettings__834796851;
+    username : Text
+  };
+type UserSettings__834796851 =
+  {
+    colorblind : Bool;
+    currency : Text;
+    language : Text;
+    reportPrefs : ReportPrefs__1012324467;
+    theme : Text
+  };
+actor ({
+  in portfolioMap :
+    Map__605269027<OldUserId__580276348, [OldTransaction__963748675]>;
+  in profileMap :
+    Map__605269027<OldUserId__580276348, OldUserProfile__416069324>;
+  in tradeOrderMap :
+    Map__605269027<OldUserId__580276348, [OldTradeOrder__725501067]>;
+  in watchlistMap : Map__605269027<OldUserId__580276348, [Text]>
+}, {
+  stable alertMap :
+    {
+      var root : Node__46230540<UserId__1043627770, [PriceAlert__232210542]>;
+      var size : Nat__490723111
+    };
+  stable portfolioMap :
+    {
+      var root : Node__46230540<UserId__1043627770, [Transaction__386155942]>;
+      var size : Nat__490723111
+    };
+  stable profileMap :
+    {
+      var root : Node__46230540<UserId__1043627770, UserProfile__277265826>;
+      var size : Nat__490723111
+    };
+  stable tradeOrderMap :
+    {
+      var root : Node__46230540<UserId__1043627770, [TradeOrder__776957706]>;
+      var size : Nat__490723111
+    };
+  stable watchlistMap :
+    {
+      var root : Node__46230540<UserId__1043627770, [Text]>;
+      var size : Nat__490723111
+    }
+});

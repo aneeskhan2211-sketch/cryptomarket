@@ -1,0 +1,25 @@
+{
+  "overview": "A full-featured crypto market app with live prices, portfolio tracking, trading, tax reports, price alerts, coin comparison, and news feed.",
+  "features": [
+    "Live price updates with connection indicator",
+    "Price alerts with toast notifications",
+    "News feed per coin in detail drawer",
+    "Portfolio performance chart (24h/7d/30d/1y)",
+    "Tax summary export to CSV",
+    "Compare coins side-by-side",
+    "Multi-currency support (EUR/USD/GBP)",
+    "Buy/sell trading with Stripe payments",
+    "Watchlist with quick actions",
+    "Dark/light theme toggle"
+  ],
+  "category": "finance",
+  "tags": [
+    "crypto",
+    "finance",
+    "portfolio",
+    "trading",
+    "market-data",
+    "german"
+  ],
+  "last_updated": "2026-06-08T21:12:26.534Z"
+}
